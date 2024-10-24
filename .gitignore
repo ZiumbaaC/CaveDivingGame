@@ -1,0 +1,6 @@
+*
+
+!.gitignore
+!CaveDivingGame\Assets\Scripts\test.txt
+
+!*/
