@@ -5,3 +5,4 @@
 !.gitignore
 
 !CaveDivingGame/Assets/Scripts/*.cs
+!CaveDivingGame/Assets/Scripts/CharacterMovesets/*.cs
