@@ -22,9 +22,14 @@ public static class RangerMoveset
 
             for(int i = 0; i < hits.Length; i++)
             {
+                if (hits[i].collider.CompareTag("Tiles"))
+                {
+                    break;
+                }
+
                 if (hits[i].collider.CompareTag("Enemy"))
                 {
-                    hits[i].collider.GetComponent<EntityData>().HP -= attack1Damage;
+                    hits[i].collider.GetComponent<EntityData>().HP -= attack1Damage + (hits[i].collider.GetComponent<EntityData>().speedAffected ? attack1Damage / 5 : 0) + (hits[i].collider.GetComponent<EntityData>().gravityAffected ? attack1Damage / 5 : 0);
                 }
             }
         }

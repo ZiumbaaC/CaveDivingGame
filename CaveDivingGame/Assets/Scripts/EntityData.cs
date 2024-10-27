@@ -8,6 +8,7 @@ public class EntityData : MonoBehaviour
     public float maxSpeed = 10;
     public float speed = 10;
     public bool speedAffected = false;
+    public bool gravityAffected = false;
 
     void Update()
     {

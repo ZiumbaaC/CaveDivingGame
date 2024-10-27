@@ -53,9 +53,19 @@ public class PlayerInputHandling : MonoBehaviour
 
     private float lastDirection = 1;
 
+    public float baseMaxDoubleJumps;
+    [HideInInspector] public float maxDoubleJumps;
+    private float doubleJumps;
+
     private void Awake()
     {
         input = new PlayerInputs();
+    }
+
+    private void Start()
+    {
+        maxDoubleJumps = baseMaxDoubleJumps;
+        doubleJumps = maxDoubleJumps;
     }
     void OnEnable()
     {
@@ -109,7 +119,12 @@ public class PlayerInputHandling : MonoBehaviour
 
         rb.velocity = new Vector2(moveDirection * walkSpeed, rb.velocity.y);
 
-        grounded = Physics2D.BoxCast(transform.position, GetComponent<BoxCollider2D>().size, 0f, Vector2.down, 0.5f, 3);
+        grounded = Physics2D.Raycast(transform.position - new Vector3(0, GetComponent<BoxCollider2D>().size.y / 2 + 0.1f, 3), Vector2.down, 0.4f) || Physics2D.Raycast(transform.position - new Vector3(GetComponent<BoxCollider2D>().size.x / 2, GetComponent<BoxCollider2D>().size.y / 2 + 0.1f, 0), Vector2.down, 0.4f, 3) || Physics2D.Raycast(transform.position + new Vector3(GetComponent<BoxCollider2D>().size.x / 2, GetComponent<BoxCollider2D>().size.y / 2 + 0.1f, 0), Vector2.down, 0.4f, 3);
+
+        if (grounded)
+        {
+            doubleJumps = maxDoubleJumps;
+        }
 
         crouching = crouch.IsPressed();
         blocking = block.IsPressed();
@@ -139,7 +154,16 @@ public class PlayerInputHandling : MonoBehaviour
 
     void Jump(InputAction.CallbackContext context)
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        if (grounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+
+        }
+        else if (doubleJumps > 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            doubleJumps--;
+        }
     }
 
     void Attack1(InputAction.CallbackContext context)
@@ -203,6 +227,6 @@ public class PlayerInputHandling : MonoBehaviour
     {
         GameObject projectile = Instantiate(prefab, startPos + new Vector2(1.5f, 0) * direction, Quaternion.identity);
 
-        projectile.GetComponent<Rigidbody2D>().AddForce((angle + new Vector2(0, 0.5f * vertLook)).normalized * throwForce);
+        projectile.GetComponent<Rigidbody2D>().AddForce(new Vector2((angle + new Vector2(0, 0.5f * vertLook)).x * direction, (angle + new Vector2(0, 0.5f * vertLook)).y).normalized * throwForce);
     }
 }
