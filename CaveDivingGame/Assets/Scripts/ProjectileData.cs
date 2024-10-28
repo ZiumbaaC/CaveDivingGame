@@ -14,7 +14,7 @@ public class ProjectileData : MonoBehaviour
 
     void Update()
     {
-        GetComponent<Rigidbody2D>().velocity = new Vector2((projectileSpeed * projectileAngle).x, (projectileSpeed * projectileAngle).y) * direction;
+        GetComponent<Rigidbody2D>().velocity = new Vector2((projectileSpeed * projectileAngle).x * direction, (projectileSpeed * projectileAngle).y);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -23,10 +23,6 @@ public class ProjectileData : MonoBehaviour
         {
             collision.GetComponent<EntityData>().HP -= projectileDamage;
             collision.GetComponent<Rigidbody2D>().AddForce(projectileKnockbackAngle * projectileKnockbackForce);
-        }
-        else
-        {
-            Destroy(gameObject);
         }
     }
 }

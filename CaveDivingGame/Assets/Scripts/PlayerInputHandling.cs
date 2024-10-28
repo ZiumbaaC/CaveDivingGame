@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -119,7 +120,19 @@ public class PlayerInputHandling : MonoBehaviour
 
         rb.velocity = new Vector2(moveDirection * walkSpeed, rb.velocity.y);
 
-        grounded = Physics2D.Raycast(transform.position - new Vector3(0, GetComponent<BoxCollider2D>().size.y / 2 + 0.1f, 3), Vector2.down, 0.4f) || Physics2D.Raycast(transform.position - new Vector3(GetComponent<BoxCollider2D>().size.x / 2, GetComponent<BoxCollider2D>().size.y / 2 + 0.1f, 0), Vector2.down, 0.4f, 3) || Physics2D.Raycast(transform.position + new Vector3(GetComponent<BoxCollider2D>().size.x / 2, GetComponent<BoxCollider2D>().size.y / 2 + 0.1f, 0), Vector2.down, 0.4f, 3);
+        RaycastHit2D[] hits = Physics2D.BoxCastAll(transform.position - new Vector3(0,0.1f, 0), GetComponent<BoxCollider2D>().size, 0, Vector2.down, 0.4f);
+
+        grounded = false;
+
+        foreach (RaycastHit2D hit in hits)
+        {
+            if(hit.collider.CompareTag("Tiles"))
+            {
+                grounded = true;
+                break;
+            }
+        }
+
 
         if (grounded)
         {
@@ -195,7 +208,7 @@ public class PlayerInputHandling : MonoBehaviour
     {
         if (diver == Diver.Monk)
         {
-            MonkMoveset.Attack3(transform, monkAttack3Prefab, lastDirection);
+            MonkMoveset.Attack3(transform, monkAttack3Prefab, lastDirection, lookDirectionVertical);
         }
         else if (diver == Diver.Ranger)
         {
